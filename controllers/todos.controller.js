@@ -34,6 +34,36 @@ exports.addTodo = async (req, res, next) => {
     })
 }
 
-exports.UpdateTodo = (req, res, next) => {}
+exports.updateTodo = async (req, res, next) => {
+    const todoId = req.params.id
+    const newText = req.body.newText
 
-exports.deleteTodo = (req, res, next) => {}
+    const todo = new Todo(newText, todoId)
+    try{    
+        await todo.save()
+    }catch (error) {
+        return next(error)
+    }
+
+    res.status(200).json({
+        message: "Updated todo successfully!",
+        updatedTodo: todo
+    })
+
+}
+
+exports.deleteTodo = async (req, res, next) => {
+    const todoId = req.params.id
+
+    const todo = new Todo(null, todoId)
+
+    try {
+        await todo.delete()
+    } catch (error) {
+        return next(error)
+    }
+
+    res.status(200).json({
+        message: "todo successfully deleted!"
+    })
+}
